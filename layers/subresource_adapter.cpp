@@ -367,8 +367,7 @@ ImageRangeGenerator::ImageRangeGenerator(const ImageRangeEncoder& encoder, const
 
 void ImageRangeGenerator::SetPos() {
     VkImageSubresource subres = {static_cast<VkImageAspectFlags>(encoder_->AspectBit(aspect_index_)),
-                                 subres_range_.baseMipLevel + mip_level_index_,
-                                 subres_range_.baseArrayLayer};
+                                 subres_range_.baseMipLevel + mip_level_index_, subres_range_.baseArrayLayer};
     subres_layout_ = &(encoder_->SubresourceLayout(subres));
     const VkExtent3D& subres_extent = encoder_->SubresourceExtent(subres.mipLevel);
     Subresource limits = encoder_->Limits();
