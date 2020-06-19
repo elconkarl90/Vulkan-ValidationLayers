@@ -6509,7 +6509,7 @@ enum VuIndex {
     kSrcIgnoreRequiresDstIgnore,
     kSrcAndDstValidOrSpecial,
     kSrcAndDestMustBeIgnore,
-    kBothIgnoreOrBothValid,
+    kSrcAndDstBothValid,
     kSubmitQueueMustMatchSrcOrDst
 };
 static const char *vu_summary[] = {"Source or destination queue family must be ignored.",
@@ -6527,7 +6527,7 @@ static const std::string image_error_codes[] = {
     "VUID-VkImageMemoryBarrier-image-01201",  //   kSrcIgnoreRequiresDstIgnore
     "VUID-VkImageMemoryBarrier-image-04072",  //   kSrcAndDstValidOrSpecial
     "VUID-VkImageMemoryBarrier-image-01199",  //   kSrcAndDestMustBeIgnore
-    "VUID-VkImageMemoryBarrier-image-01200",  //   kBothIgnoreOrBothValid
+    "VUID-VkImageMemoryBarrier-image-04069",  //   kSrcAndDstBothValid
     "VUID-VkImageMemoryBarrier-image-01205",  //   kSubmitQueueMustMatchSrcOrDst
 };
 
@@ -6537,7 +6537,7 @@ static const std::string buffer_error_codes[] = {
     "VUID-VkBufferMemoryBarrier-buffer-01193",  //  kSrcIgnoreRequiresDstIgnore
     "VUID-VkBufferMemoryBarrier-buffer-04089",  //  kSrcAndDstValidOrSpecial
     "VUID-VkBufferMemoryBarrier-buffer-01190",  //  kSrcAndDestMustBeIgnore
-    "VUID-VkBufferMemoryBarrier-buffer-01192",  //  kBothIgnoreOrBothValid
+    "VUID-VkBufferMemoryBarrier-buffer-04086",  //  kSrcAndDstBothValid
     "VUID-VkBufferMemoryBarrier-buffer-01196",  //  kSubmitQueueMustMatchSrcOrDst
 };
 
@@ -6676,8 +6676,8 @@ bool Validate(const CoreChecks *device_data, const char *func_name, const CMD_BU
             }
         } else {
             // VK_SHARING_MODE_EXCLUSIVE
-            if (!((src_ignored && dst_ignored) || (val.IsValid(src_queue_family) && val.IsValid(dst_queue_family)))) {
-                skip |= val.LogMsg(kBothIgnoreOrBothValid, src_queue_family, dst_queue_family);
+            if ((src_queue_family != dst_queue_family) && !(val.IsValid(src_queue_family) && val.IsValid(dst_queue_family))) {
+                skip |= val.LogMsg(kSrcAndDstBothValid, src_queue_family, dst_queue_family);
             }
         }
     }
